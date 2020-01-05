@@ -38,18 +38,11 @@ services:
       - $PWD:/app:ro,delegated # fix rspec slowness due to size of vendor dir
     working_dir: /app
     entrypoint: sh
+    environment:
+      GEM_PATH: "vendor/bundle/ruby/2.5.0"
     command:
       - "-c"
       - "not meant to be run with the stack"
-  vendor:
-    extends: ruby
-    volumes:
-      - "$PWD:/app:cached"
-      - "$PWD/vendor:/vendor:cached"
-      - "$PWD/Gemfile:/Gemfile"
-    command:
-      - -c
-      - "echo 'INFO: Vendoring dependencies...' && bundle install --without test --path /vendor/bundle"
   app:
     extends: ruby
     entrypoint: ruby
@@ -59,7 +52,7 @@ services:
       - bin/faa_ois_api.rb
   unit:
     extends: ruby
-    entrypoint: rspec
+    entrypoint: vendor/bundle/ruby/2.5.0/bin/rspec
     environment:
       LOAD_PATH: "/app/spec/unit;/app/spec;/app/lib"
       AWS_DYNAMODB_ENDPOINT_URL: "http://dynamodb:8000"
@@ -72,7 +65,7 @@ services:
       - documentation
   lint:
     extends: ruby
-    entrypoint: rubocop
+    entrypoint: vendor/bundle/ruby/2.5.0/bin/rubocop
     volumes:
       - "$PWD:/app:delegated" # need write access so that we can auto-correct
     environment:
@@ -87,7 +80,7 @@ services:
       - spec
   integration:
     extends: ruby
-    entrypoint: rspec
+    entrypoint: vendor/bundle/ruby/2.5.0/bin/rspec
     env_file: .env
     environment:
       ENVIRONMENT: test
@@ -118,3 +111,21 @@ services:
     command:
       - -c
       - ./scripts/integration_teardown.sh
+  vendor:
+    extends: ruby
+    volumes:
+      - "$PWD:/app:cached"
+      - "$PWD/vendor:/vendor:cached"
+      - "$PWD/Gemfile:/Gemfile"
+    command:
+      - -c
+      - "echo 'INFO: Vendoring dependencies...' && bundle install --path /vendor/bundle"
+  vendor-with-test:
+    extends: ruby
+    volumes:
+      - "$PWD:/app:cached"
+      - "$PWD/vendor:/vendor:cached"
+      - "$PWD/Gemfile:/Gemfile"
+    command:
+      - -c
+      - "echo 'INFO: Vendoring dependencies...' && bundle install --with test --path /vendor/bundle"
