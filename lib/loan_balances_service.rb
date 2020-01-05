@@ -11,6 +11,8 @@ module LoanBalancesService
     sub_service = Subservice.find(provider)
     raise "Provider not found: #{sub_service}" if sub_service.nil?
 
-    Object.const_get("LoanBalancesService::Providers::#{sub_service}").balance
+    browser = Browser.new
+    Object.const_get("LoanBalancesService::Providers::#{sub_service}")
+          .balance(browser)
   end
 end
