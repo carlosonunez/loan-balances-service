@@ -1,0 +1,68 @@
+---
+plugins:
+  - serverless-domain-manager
+
+service:
+  name: loan-balances-service
+
+frameworkVersion: '>=1.0.0'
+
+layers:
+  phantomjs:
+    package:
+      artifact: include/phantomjs_lambda.zip
+
+provider:
+  name: aws
+  runtime: ruby2.5
+  region: ${env:AWS_REGION, 'us-east-2'}
+  memorySize: 1024
+  deploymentBucket:
+    name: ${env:SERVERLESS_BUCKET_NAME}
+  deploymentPrefix: serverless
+  apiKeys:
+    - ${self:custom.keyName.${opt:stage, self:provider.stage}}
+  tracing:
+    apiGateway: true
+
+package:
+  include:
+    - lib/**
+    - bin/**
+    - vendor/**
+  exclude:
+    - include/**
+    - scripts/**
+    - secrets/**
+    - infra/**
+    - docker-compose.*
+    - .terraform/**
+    - spec/**
+    - .env*
+
+functions:
+  ping:
+    handler: bin/loan_balances.get_ping
+    description: Health check for loan balances service.
+    timeout: 30
+    environment:
+      GEM_PATH: vendor/bundle/ruby/2.5.0
+    events:
+      - http:
+          path: ping
+          method: get
+
+custom:
+  keyName:
+    develop: default-loan-balance-service-key-dev
+    v1: default-loan-balance-service-key-prod
+  enableCustomDomain:
+    develop: false
+    v1: true
+  customDomain:
+    stage: v1
+    domainName: ${env:DOMAIN_PATH}.${env:DOMAIN_TLD}
+    certificateArn: ${file(./secrets/certificate_arn)}
+    basePath: 'v1'
+    createRoute53Record: true
+    enabled: ${self:custom.enableCustomDomain.${opt:stage, self:provider.stage}}
