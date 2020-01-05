@@ -1,6 +1,5 @@
 .env
-.env
-.env
-.env
-.env
 .terraform
+vendor/
+Gemfile.lock
+.bundle/
