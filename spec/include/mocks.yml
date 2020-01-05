@@ -1,0 +1,3 @@
+---
+- url: 'http://example.page'
+  page: '/path/to/page/within/spec/fixtures/path'
