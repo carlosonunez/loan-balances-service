@@ -1,3 +1,3 @@
 ---
-- url: 'http://example.page'
-  page: '/path/to/page/within/spec/fixtures/path'
+- url: 'https://online.datcu.org'
+  page: 'providers/datcu/login.html'
