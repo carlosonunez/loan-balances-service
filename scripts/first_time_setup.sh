@@ -4,7 +4,7 @@ TERRAFORM_STATE_S3_BUCKET="${TERRAFORM_STATE_S3_BUCKET?Please provide a bucket f
 TF_VAR_app_name="${TF_VAR_app_name?Please define the 'app_name' Terraform variable with TF_VAR_app_name.}"
 
 get_application_name() {
-  echo "$TF_VAR_app_name" | tr '_' '-' | tr '[:upper:]' '[:lower:]'
+  echo "$TF_VAR_app_name" | tr '[:upper:]' '[:lower:]'
 }
 
 make_buckets() {
