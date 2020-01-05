@@ -6,11 +6,11 @@ gem 'logger'
 gem 'httparty'
 gem 'dynamoid'
 gem 'nokogiri'
+gem 'poltergeist'
 group :test do
   gem 'rspec'
   gem 'rspec-expectations'
   gem 'pry'
-  gem 'selenium-webdriver'
   gem 'capybara'
   gem 'rubocop'
 end
