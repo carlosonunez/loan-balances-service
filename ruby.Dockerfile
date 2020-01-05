@@ -1,12 +1,12 @@
-FROM ruby:2.5-alpine
+FROM lambci/lambda:build-ruby2.5
 MAINTAINER Carlos Nunez <dev@carlosnunez.me>
 ARG ENVIRONMENT
+ENV BROWSER_URL=https://github.com/carlosonunez/poltergeist-lambda/raw/1.0.0/phantomjs_lambda.zip
 
-RUN apk add --no-cache ruby-dev  ruby-nokogiri build-base libxml2-dev \
-libxslt-dev postgresql-dev sqlite sqlite-libs sqlite-dev less
+RUN yum install -y ruby25-devel gcc libxml2 libxml2-devel \
+  libxslt libxslt-devel patch
 
-COPY Gemfile /
-RUN bundle install --gemfile /Gemfile
-
-WORKDIR /app
-ENTRYPOINT ["ruby", "-e", "puts 'Welcome to tripit-api'"]
+RUN wget --output-file=/poltergeist_lambda.zip "$BROWSER_URL"
+RUN unzip -d /opt /phantomjs_lambda.zip && rm /phantomjs_lambda.zip
+WORKDIR /var/task
+ENTRYPOINT ["ruby", "-e", "puts 'Welcome to your service.'"]
