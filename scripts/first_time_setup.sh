@@ -10,9 +10,9 @@ get_application_name() {
 make_buckets() {
   for bucket in "$SERVERLESS_BUCKET_NAME" "$TERRAFORM_STATE_S3_BUCKET"
   do
-    if ! aws s3 ls "s3://$bucket" &>/dev/null
+    if ! aws --region=$AWS_REGION s3 ls "s3://$bucket" &>/dev/null
     then
-      aws s3 mb "s3://$bucket"
+      aws --region=$AWS_REGION s3 mb "s3://$bucket"
     fi
   done
 }
