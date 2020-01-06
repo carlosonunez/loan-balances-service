@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+TF_VAR_app_name="${TF_VAR_app_name?Please provide an app name via TF_VAR_app_name.}"
+
 source $(dirname "$0")/helpers/shared_secrets.sh
 set -e
 
@@ -13,8 +15,8 @@ get_api_gateway_endpoint() {
 
   >&2 echo "INFO: Getting API Gateway default API key."
   api_key=$(serverless info --stage develop | \
-    grep -E 'default-faa-ois-key-dev:' | \
-    sed 's/.*default-faa-ois-key-dev: //' | \
+    grep -E "default-$TF_VAR_app_name-dev" | \
+    sed "s/.*default-$TF_VAR_app_name-dev: //" | \
     tr -d ' '
   )
   if test -z "$endpoint_url"
