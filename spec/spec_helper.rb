@@ -6,8 +6,24 @@ require 'httparty'
 require 'json'
 require 'loan_balances_service'
 require 'yaml'
+Dir.glob('/app/spec/helpers/**/*.rb') do |file|
+  require_relative file
+end
 
 module TestMocks
+  RSpec.configure do |config|
+    config.before(:all, :integration => true) do
+      $api_gateway_url = ENV['API_GATEWAY_URL'] || Helpers::Integration::HTTP.get_endpoint
+      raise "Please define API_GATEWAY_URL as an environment variable or \
+  run 'docker-compose run --rm integration-setup'" \
+        if $api_gateway_url.nil? or $api_gateway_url.empty?
+
+      $test_api_key =
+        Helpers::Integration::SharedSecrets.read_secret(secret_name: 'api_key') ||
+          raise('Please create the "api_key" secret.')
+    end
+  end
+
   def self.generate!
     extend RSpec::Mocks::ExampleMethods
     fetch_mocks.each do |mock|
