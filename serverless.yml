@@ -54,8 +54,8 @@ functions:
 
 custom:
   keyName:
-    develop: default-loan-balance-service-key-dev
-    v1: default-loan-balance-service-key-prod
+    develop: default-loan-balances-service-key-dev
+    v1: default-loan-balances-service-key-prod
   enableCustomDomain:
     develop: false
     v1: true
