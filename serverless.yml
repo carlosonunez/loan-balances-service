@@ -42,7 +42,7 @@ package:
 
 functions:
   ping:
-    handler: bin/loan_balances.get_ping
+    handler: bin/loan_balances_service.get_ping
     description: Health check for loan balances service.
     timeout: 30
     environment:
