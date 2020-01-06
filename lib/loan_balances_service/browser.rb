@@ -17,7 +17,8 @@ module LoanBalancesService
     end
 
     def browse(url)
-      yield(session.visit(url))
+      @session.visit(url)
+      yield(@session)
     end
 
     private
