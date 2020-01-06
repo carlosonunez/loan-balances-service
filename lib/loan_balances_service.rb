@@ -7,12 +7,18 @@ Dir.glob('lib/loan_balances_service/**/*.rb').each do |file|
 end
 
 module LoanBalancesService
-  def self.fetch_balance(provider:)
+  @logger = Logger.new(STDOUT)
+  @logger.level = ENV['LOG_LEVEL'] || Logger::WARN
+  def self.logger
+    @logger
+  end
+
+  def self.fetch_balance(provider:, **args)
     sub_service = Subservice.find(provider)
     raise "Provider not found: #{sub_service}" if sub_service.nil?
 
     browser = Browser.new
     Object.const_get("LoanBalancesService::Providers::#{sub_service}")
-          .balance(browser)
+          .balance(browser, args)
   end
 end
