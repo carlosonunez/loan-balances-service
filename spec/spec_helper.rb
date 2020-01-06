@@ -3,6 +3,7 @@
 require 'capybara'
 require 'capybara/poltergeist'
 require 'httparty'
+require 'json'
 require 'loan_balances_service'
 require 'yaml'
 
