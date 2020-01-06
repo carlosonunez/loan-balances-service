@@ -3,3 +3,6 @@
 vendor/
 Gemfile.lock
 .bundle/
+include/phantomjs_lambda.zip
+secrets/
+.serverless
