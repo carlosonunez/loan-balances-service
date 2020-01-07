@@ -9,11 +9,9 @@ module LoanBalancesService
         verify_parameters!(args)
         browser.browse('https://online.datcu.org') do |session|
           begin
-            fill_in_username(session, args[:username])
-            enter_password_and_sign_in(session, args[:password])
-            answer_security_challenge(session, args[:challenge_answer])
+            log_in(session, args)
             find_and_return_balance_usd(session, args[:account_number])
-          rescue Exception => e
+          rescue StandardError => e
             LoanBalancesService::Errors.log "DATCU login failed: #{e}"
           end
         end
@@ -23,6 +21,12 @@ module LoanBalancesService
         %i[username password challenge_answer account_number].each do |arg|
           raise "Argument missing: #{arg}" unless args.key? arg
         end
+      end
+
+      def self.log_in(session, args)
+        fill_in_username(session, args[:username])
+        enter_password_and_sign_in(session, args[:password])
+        answer_security_challenge(session, args[:challenge_answer])
       end
 
       def self.fill_in_username(session, username)
@@ -57,6 +61,7 @@ module LoanBalancesService
         session.refresh
       end
 
+      private_class_method :log_in
       private_class_method :refresh_page!
       private_class_method :find_and_return_balance_usd
       private_class_method :answer_security_challenge
