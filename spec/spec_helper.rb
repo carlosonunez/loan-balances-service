@@ -13,15 +13,15 @@ end
 module TestMocks
   RSpec.configure do |config|
     config.before(:all, integration: true) do
-      $api_gateway_url = ENV['API_GATEWAY_URL'] || Helpers::Integration::HTTP.get_endpoint
+      $api_gateway_url =
+        ENV['API_GATEWAY_URL'] || Helpers::Integration::HTTP.fetch_endpoint
       if $api_gateway_url.nil? || $api_gateway_url.empty?
         raise "Please define API_GATEWAY_URL as an environment variable or \
   run 'docker-compose run --rm integration-setup'"
       end
-
       $test_api_key =
-        Helpers::Integration::SharedSecrets.read_secret(secret_name: 'api_key') ||
-        raise('Please create the "api_key" secret.')
+        Helpers::Integration::SharedSecrets.read(secret_name: 'api_key')
+      raise 'Please create the "api_key" secret.' if $test_api_key.nil?
     end
   end
 
