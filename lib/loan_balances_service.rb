@@ -15,12 +15,6 @@ module LoanBalancesService
     @logger
   end
 
-  def self.ping
-    AWSHelpers::APIGateway.ok(
-      message: "Hello from Carlos's Loan Balance service!"
-    )
-  end
-
   def self.fetch_balance(provider:, **args)
     sub_service = Subservice.find(provider)
     raise "Provider not found: #{sub_service}" if sub_service.nil?

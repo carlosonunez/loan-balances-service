@@ -7,5 +7,9 @@ end
 require 'loan_balances_service'
 
 def ping(event: {}, context: {})
-  LoanBalancesService.ping
+  begin
+    AWSHelpers::APIGateway.ok(LoanBalancesService::HealthCheck.ping)
+  rescue
+    AWSHelpers::APIGateway.error("App is running, but something is wrong.")
+  end
 end
