@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'logger'
 require 'loan_balances_service/aws_helpers/api_gateway'
 
 Dir.glob('lib/loan_balances_service/**/*.rb').each do |file|

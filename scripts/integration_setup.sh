@@ -15,8 +15,8 @@ get_api_gateway_endpoint() {
 
   >&2 echo "INFO: Getting API Gateway default API key."
   api_key=$(serverless info --stage develop | \
-    grep -E "default-$TF_VAR_app_name-dev" | \
-    sed "s/.*default-$TF_VAR_app_name-dev: //" | \
+    grep -E "default-$TF_VAR_app_name-key-dev" | \
+    sed "s/.*default-$TF_VAR_app_name-key-dev: //" | \
     tr -d ' '
   )
   if test -z "$endpoint_url"

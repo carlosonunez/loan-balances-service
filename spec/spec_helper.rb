@@ -13,8 +13,7 @@ end
 module TestMocks
   RSpec.configure do |config|
     config.before(:all, integration: true) do
-      $api_gateway_url =
-        ENV['API_GATEWAY_URL'] || Helpers::Integration::HTTP.fetch_endpoint
+      $api_gateway_url ||= Helpers::Integration::HTTP.fetch_endpoint
       if $api_gateway_url.nil? || $api_gateway_url.empty?
         raise "Please define API_GATEWAY_URL as an environment variable or \
   run 'docker-compose run --rm integration-setup'"
