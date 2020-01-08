@@ -13,13 +13,14 @@ module Helpers
           attempts += 1
           sleep 1
         end
-        puts "Endpoint: #{endpoint_name}"
-        raise "Endpoint not found" if endpoint_name.nil?
+        raise 'Endpoint not found' if endpoint_name.nil?
+
         endpoint_name
       end
 
       def self.fetch_endpoint_name
         return ENV['API_GATEWAY_URL'] unless ENV['API_GATEWAY_URL'].nil?
+
         Helpers::Integration::SharedSecrets.read(secret_name: 'endpoint_name')
       end
 
