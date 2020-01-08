@@ -5,11 +5,14 @@ if Dir.exist? './vendor'
 end
 
 require 'loan_balances_service'
+require 'loan_balances_service/aws_helpers/api_gateway'
 
 def ping(event: {}, context: {})
   begin
-    AWSHelpers::APIGateway.ok(LoanBalancesService::HealthCheck.ping)
+    LoanBalancesService::AWSHelpers::APIGateway.ok(
+      message: LoanBalancesService::HealthCheck.ping)
   rescue
-    AWSHelpers::APIGateway.error("App is running, but something is wrong.")
+    LoanBalancesService::AWSHelpers::APIGateway.error(
+      message: "App is running, but something is wrong.")
   end
 end

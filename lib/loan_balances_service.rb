@@ -5,7 +5,6 @@ require 'loan_balances_service/aws_helpers/api_gateway'
 
 Dir.glob('lib/loan_balances_service/**/*.rb').each do |file|
   module_name = file.sub(%r{^lib/(.*).rb$}, '\1')
-  puts "Requiring #{module_name}"
   require module_name
 end
 
