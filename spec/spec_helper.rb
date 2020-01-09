@@ -10,6 +10,26 @@ Dir.glob('/app/spec/helpers/**/*.rb') do |file|
   require_relative file
 end
 
+RSpec.configure do |config|
+  config.before(:all, unit: true) do
+    ENV['APP_AWS_ACCESS_KEY_ID'] = 'fake'
+    ENV['APP_AWS_SECRET_ACCESS_KEY'] = 'fake'
+    unless $dynamodb_mocking_started
+      Helpers::Aws::DynamoDBLocal.start_mocking!
+      puts 'Waiting 60 seconds for local DynamoDB instance to become availble.'
+      seconds_elapsed = 0
+      loop do
+        raise 'DynamoDB local not ready.' if seconds_elapsed == 60
+        break if Helpers::Aws::DynamoDBLocal.started?
+
+        seconds_elapsed += 1
+        sleep(1)
+      end
+      $dynamodb_mocking_started = true
+    end
+  end
+end
+
 module Service
   def self.get(endpoint, params: {}, authenticated: false)
     yield(request(:get, endpoint, params, authenticated))
@@ -20,13 +40,14 @@ module Service
   end
 
   def self.request(method, endpoint, params, authenticated)
-    raise "API endpoint not found; run TestMocks.generate first" \
+    raise 'API endpoint not found; run TestMocks.generate first' \
       if $api_gateway_url.nil?
+
     headers = {}
     headers['x-api-key'] = $test_api_key if authenticated
 
     httparty = HTTParty
-    uri = [ $api_gateway_url, endpoint ].join('/')
+    uri = [$api_gateway_url, endpoint].join('/')
     httparty.send(method.to_sym, uri, headers: headers, query: params)
   end
 

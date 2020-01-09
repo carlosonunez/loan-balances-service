@@ -108,24 +108,13 @@ resource "aws_acm_certificate_validation" "app_cert" {
   validation_record_fqdns = ["${aws_route53_record.app_cert_validation_cname.0.fqdn}"]
 }
 
-resource "aws_dynamodb_table" "state_associations" {
-  name = "${var.app_name}_auth_state_${var.environment}_tokens"
-  hash_key = "access_key"
+resource "aws_dynamodb_table" "credentials" {
+  name = "${var.app_name}_provider_data_${var.environment}_credentials"
+  hash_key = "provider"
   read_capacity = 2
   write_capacity = 2
   attribute {
-    name = "access_key"
-    type = "S"
-  }
-}
-
-resource "aws_dynamodb_table" "app_tokens" {
-  name = "${var.app_name}_auth_state_${var.environment}_state_associations"
-  hash_key = "tripit_token"
-  read_capacity = 2
-  write_capacity = 2
-  attribute {
-    name = "tripit_token"
+    name = "provider"
     type = "S"
   }
 }

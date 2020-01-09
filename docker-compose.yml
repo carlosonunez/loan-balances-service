@@ -17,6 +17,12 @@ services:
     ports:
       - 4444:4444
       - 5900:5900
+  dynamodb:
+    image: amazon/dynamodb-local
+    environment:
+      ENVIRONMENT: "test"
+    ports:
+      - 8000:8000
   serverless:
     build:
       dockerfile: serverless.Dockerfile
