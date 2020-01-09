@@ -16,7 +16,7 @@ module Service
   end
 
   def self.post(endpoint, params: {}, authenticated: false)
-    yield(request(:get, endpoint, params, authenticated))
+    yield(request(:post, endpoint, params, authenticated))
   end
 
   def self.request(method, endpoint, params, authenticated)
