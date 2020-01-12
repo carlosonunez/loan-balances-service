@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Helpers
+module SpecHelpers
   module Integration
     module SharedSecrets
       def self.generate_secret_path!(secret_name:)

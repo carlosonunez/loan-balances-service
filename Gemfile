@@ -7,6 +7,7 @@ gem 'httparty'
 gem 'dynamoid'
 gem 'nokogiri'
 gem 'poltergeist'
+gem 'bcrypt'
 group :test do
   gem 'rspec'
   gem 'rspec-expectations'

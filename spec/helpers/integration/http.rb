@@ -2,7 +2,7 @@
 
 require 'net/http'
 
-module Helpers
+module SpecHelpers
   module Integration
     module HTTP
       def self.fetch_endpoint

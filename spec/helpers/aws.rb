@@ -3,7 +3,7 @@
 require 'aws-sdk-dynamodb'
 require 'dynamoid'
 
-module Helpers
+module SpecHelpers
   module Aws
     module DynamoDBLocal
       def self.start_mocking!
@@ -18,13 +18,16 @@ manifest with the AWS_DYNAMODB_ENDPOINT_URL environment variable"
 
       def self.started?
         unless is_dynamodb_mocked?
-          raise "DynamoDB is not configured for mocking; run 'start_mocking!' \
-to do so"
+          raise "DynamoDB is not configured for mocking; run 'start_mocking!'"
         end
 
-        dynamodb = ::Aws::DynamoDB::Client.new
-        dynamodb.list_tables
-        true
+        begin
+          dynamodb = ::Aws::DynamoDB::Client.new
+          dynamodb.list_tables
+          true
+        rescue StandardError
+          false
+        end
       end
 
       def self.drop_tables!

@@ -10,9 +10,9 @@ describe 'Given a DATCU online account' do
   context 'When I log in' do
     example 'Then I get a balance', :integration do
       params = { provider: 'datcu' }
-      Service.get('/balance',
-                  params: params,
-                  authenticated: true) do |response|
+      SpecHelpers::Service.get('/balance',
+                               params: params,
+                               authenticated: true) do |response|
         status = JSON.parse(response.body)[:status]
         balance = JSON.parse(response.body)[:message]
         expect(response.code).to eq 200
