@@ -1,13 +1,8 @@
 version: '2.2'
 services:
-  first-time-setup:
+  aws:
     image: anigeo/awscli
-    entrypoint: sh
-    volumes:
-      - "$PWD:/app"
-    working_dir: /app
     env_file: .env
-    command: scripts/first_time_setup.sh
   selenium:
     image: selenium/standalone-chrome-debug
     environment:
@@ -49,6 +44,13 @@ services:
     command:
       - "-c"
       - "not meant to be run with the stack"
+  first-time-setup:
+    extends: aws
+    entrypoint: sh
+    volumes:
+      - "$PWD:/app"
+    working_dir: /app
+    command: scripts/first_time_setup.sh
   app:
     extends: ruby
     entrypoint: ruby

@@ -109,7 +109,7 @@ resource "aws_acm_certificate_validation" "app_cert" {
 }
 
 resource "aws_dynamodb_table" "credentials" {
-  name = "${var.app_name}_provider_data_${var.environment}_credentials"
+  name = "provider-data-${var.environment}_credentials"
   hash_key = "provider"
   read_capacity = 2
   write_capacity = 2

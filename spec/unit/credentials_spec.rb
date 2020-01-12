@@ -6,28 +6,22 @@ describe 'Given a provider' do
   context 'When we add new credentials to our credentials store' do
     example 'Then they get added', :unit_with_database do
       SpecHelpers::Aws::DynamoDBLocal.drop_tables!
-
-      expect(SecureRandom).to receive(:hex)
-        .exactly(1).times
-        .and_return('random_salt')
-      expect(LoanBalancesService::Credentials.save(provider: 'foo',
-                                                   username: 'bar',
-                                                   password: 'baz',
-                                                   more_stuff: 'quux'))
+      expect do
+        LoanBalancesService::Credentials.save!(provider: 'foo',
+                                               username: 'bar',
+                                               password: 'baz')
+      end
         .not_to raise_error
 
       dynamodb = ::Aws::DynamoDB::Client.new
-      hashed_password =
-        '$2a$12$caPFayRVuSbBDw0v6RDFtebXhq/S4CE0gti36xQDWwxAP.DdLmujq'
       response = dynamodb.get_item(
-        table_name: 'loan-balances-service_provider_data_test_credentials',
-        key: { "Provider": { s: 'foo' } }
+        table_name: 'provider-data-test_credentials',
+        key: { provider: 'foo' }
       )
-      expect(response.item).to eq(
-        "Provider": { s: 'foo' },
-        "Username": { s: 'bar' },
-        "Password": { s: hashed_password }
-      )
+      expect(response.item['provider']).to eq 'foo'
+      expect(response.item['username']).to eq 'bar'
+      actual_pw = BCrypt::Password.new(response.item['password'])
+      expect(actual_pw).to eq 'baz'
     end
   end
 end
