@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ostruct'
 require 'spec_helper'
 
 describe 'Given a provider' do
@@ -22,6 +23,24 @@ describe 'Given a provider' do
       expect(response.item['username']).to eq 'bar'
       actual_pw = BCrypt::Password.new(response.item['password'])
       expect(actual_pw).to eq 'baz'
+    end
+  end
+
+  context 'When we fetch credentials' do
+    example 'Then we get them', :unit do
+      fake_credential_result = [OpenStruct.new(
+        provider: 'foo',
+        username: 'bar',
+        password: 'fake-hashed-password'
+      )]
+      allow(LoanBalancesService::Credential).to receive(:where)
+        .and_return(fake_credential_result)
+      expect(BCrypt::Password)
+        .to receive(:create)
+        .and_return('baz')
+      expect(LoanBalancesService::Credentials.get(provider: 'foo',
+                                                  username: 'baz'))
+        .to eq('baz')
     end
   end
 end

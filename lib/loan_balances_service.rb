@@ -15,7 +15,7 @@ module LoanBalancesService
     @logger
   end
 
-  def self.fetch_balance(provider:, **args)
+  def self.fetch_balance(provider:, username:, **args)
     sub_service = Subservice.find(provider)
     raise "Provider not found: #{sub_service}" if sub_service.nil?
 
