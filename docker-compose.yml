@@ -36,7 +36,7 @@ services:
         ENVIRONMENT: test
     env_file: .env
     volumes:
-      - $PWD:/app:ro,delegated # fix rspec slowness due to size of vendor dir
+      - $PWD:/app:delegated,ro
     working_dir: /app
     entrypoint: sh
     environment:
@@ -124,8 +124,8 @@ services:
   vendor:
     extends: ruby
     volumes:
-      - "$PWD:/app:cached"
-      - "$PWD/vendor:/vendor:cached"
+      - "$PWD:/app:delegated"
+      - "$PWD/vendor:/vendor:delegated"
       - "$PWD/Gemfile:/Gemfile"
     command:
       - -c
@@ -133,8 +133,8 @@ services:
   vendor-with-test:
     extends: ruby
     volumes:
-      - "$PWD:/app:cached"
-      - "$PWD/vendor:/vendor:cached"
+      - "$PWD:/app:delegated"
+      - "$PWD/vendor:/vendor:delegated"
       - "$PWD/Gemfile:/Gemfile"
     command:
       - -c
