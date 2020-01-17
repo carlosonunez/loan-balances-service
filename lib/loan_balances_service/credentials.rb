@@ -32,7 +32,7 @@ module LoanBalancesService
     def self.get(provider:, username:)
       found_credentials = Credential.where(provider: provider,
                                            username: username)
-      raise 'Credential not found' if found_credentials.count.zero?
+      return nil if found_credentials.count.zero?
 
       credential = found_credentials.first
       BCrypt::Password.create(credential.password)
