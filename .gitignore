@@ -6,3 +6,4 @@ Gemfile.lock
 include/phantomjs_lambda.zip
 secrets/
 .serverless
+.DS_Store
