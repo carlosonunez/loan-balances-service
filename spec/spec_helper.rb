@@ -4,8 +4,9 @@ require 'capybara'
 require 'capybara/poltergeist'
 require 'httparty'
 require 'json'
-require 'loan_balances_service'
 require 'yaml'
+require 'loan_balances_service'
+
 Dir.glob('/app/spec/helpers/**/*.rb') do |file|
   require_relative file
 end
@@ -27,5 +28,9 @@ RSpec.configure do |config|
       end
       $dynamodb_mocking_started = true
     end
+  end
+
+  config.after(:each, unit_with_database: true) do
+    SpecHelpers::Aws::DynamoDBLocal.drop_tables!
   end
 end
