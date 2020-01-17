@@ -6,7 +6,6 @@ require 'spec_helper'
 describe 'Given a provider' do
   context 'When we add new credentials to our credentials store' do
     example 'Then they get added', :unit_with_database do
-      SpecHelpers::Aws::DynamoDBLocal.drop_tables!
       expect do
         LoanBalancesService::Credentials.save!(provider: 'foo',
                                                username: 'bar',
