@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 require 'logger'
-require 'loan_balances_service/aws_helpers/api_gateway'
-
-Dir.glob('lib/loan_balances_service/**/*.rb').each do |file|
-  module_name = file.sub(%r{^lib/(.*).rb$}, '\1')
-  require module_name
-end
+require 'loan_balances_service/health_check'
+require 'loan_balances_service/providers'
 
 module LoanBalancesService
   @logger = Logger.new(STDOUT)
@@ -16,11 +12,11 @@ module LoanBalancesService
   end
 
   def self.fetch_balance(provider:, username:, **args)
-    sub_service = Subservice.find(provider)
-    raise "Provider not found: #{sub_service}" if sub_service.nil?
+    provider = Provider.new(provider, username, args)
+    unless provider.password?
+      raise 'No password exists for this username and provider.'
+    end
 
-    browser = Browser.new
-    Object.const_get("LoanBalancesService::Providers::#{sub_service}")
-          .balance(browser, args)
+    provider.balance
   end
 end
