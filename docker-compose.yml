@@ -26,7 +26,7 @@ services:
       ENVIRONMENT: test
     env_file: .env
     volumes:
-      - $PWD:/app
+      - $PWD:/app:ro,cached
     working_dir: /app
   ruby:
     build:
@@ -35,8 +35,6 @@ services:
       args:
         ENVIRONMENT: test
     env_file: .env
-    volumes:
-      - $PWD:/app:delegated,ro
     working_dir: /app
     entrypoint: sh
     environment:
@@ -48,7 +46,7 @@ services:
     extends: aws
     entrypoint: sh
     volumes:
-      - "$PWD:/app"
+      - $PWD:/app:cached
     working_dir: /app
     command: scripts/first_time_setup.sh
   app:
@@ -57,7 +55,7 @@ services:
     environment:
       ENVIRONMENT: test
     command:
-      - bin/faa_ois_api.rb
+      - bin/loan_balances_service.rb
   unit:
     extends: ruby
     entrypoint: vendor/bundle/ruby/2.5.0/bin/rspec
@@ -76,8 +74,6 @@ services:
   lint:
     extends: ruby
     entrypoint: vendor/bundle/ruby/2.5.0/bin/rubocop
-    volumes:
-      - "$PWD:/app:delegated" # need write access so that we can auto-correct
     environment:
       LOAD_PATH: "/app/spec/unit;/app/spec;/app/lib"
       AWS_DYNAMODB_ENDPOINT_URL: "http://dynamodb:8000"
@@ -97,8 +93,6 @@ services:
       LOAD_PATH: "/app/spec/unit;/app/spec;/app/lib"
       SELENIUM_HOST: selenium
       SELENIUM_PORT: 4444
-    volumes:
-      - "$PWD/secrets:/secrets"
     command:
       - --tag
       - integration
@@ -129,7 +123,7 @@ services:
       - "$PWD/Gemfile:/Gemfile"
     command:
       - -c
-      - "echo 'INFO: Vendoring dependencies...' && bundle install --path /vendor/bundle"
+      - "echo 'INFO: Vendoring dependencies...' && bundle install --parallel=16 --path /vendor/bundle"
   vendor-with-test:
     extends: ruby
     volumes:
@@ -138,4 +132,4 @@ services:
       - "$PWD/Gemfile:/Gemfile"
     command:
       - -c
-      - "echo 'INFO: Vendoring dependencies...' && bundle install --with test --path /vendor/bundle"
+      - "echo 'INFO: Vendoring dependencies...' && bundle install --parallel=16 --with test --path /vendor/bundle"

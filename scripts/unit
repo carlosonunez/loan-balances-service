@@ -4,6 +4,7 @@ if ! test -d "vendor/bundle" || test "$REVENDOR" == "true"
 then
   docker-compose run --rm vendor
 fi
+docker-compose build --parallel lint unit
 docker-compose up -d dynamodb
 docker-compose run --rm lint
 docker-compose run --rm unit

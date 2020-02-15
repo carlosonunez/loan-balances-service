@@ -10,4 +10,7 @@ RUN curl -L -o /phantomjs_lambda.zip "$BROWSER_URL"
 RUN unzip /phantomjs_lambda.zip -d /opt && rm /phantomjs_lambda.zip
 WORKDIR /var/task
 
+COPY . /app
+WORKDIR /app
+
 ENTRYPOINT ["ruby", "-e", "puts 'Welcome to your service.'"]
